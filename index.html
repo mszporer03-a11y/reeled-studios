@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reeled Studios — KartX</title>
+  <meta name="description" content="Reeled Studios é um estúdio brasileiro de videogames. Conheça KartX, o jogo de corrida de kart e monopostos feito na Unreal Engine 5.">
+  <meta name="theme-color" content="#01020a">
+  <meta property="og:title" content="Reeled Studios — KartX">
+  <meta property="og:description" content="Estúdio brasileiro de videogames. KartX: kart, shifter e fórmula, 13 circuitos, chuva, neblina e IA que aprende a pilotar.">
+  <meta property="og:image" content="assets/img/hero-kart.jpg">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="is-loading">
+
+  <!-- ===================== LOADER: luzes de largada ===================== -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <div class="reel-logo reel-logo--big">
+        <svg class="reel" viewBox="0 0 100 100"><use href="#reel"/></svg>
+        <div class="reel-logo__word"><span>REELED</span><small>STUDIOS</small></div>
+      </div>
+      <div class="lights">
+        <i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <p class="loader__hint">PREPARANDO A LARGADA…</p>
+    </div>
+    <div class="loader__wipe"></div>
+  </div>
+
+  <!-- símbolos SVG reutilizáveis -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="reel" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="8"/>
+        <circle cx="50" cy="50" r="9" fill="currentColor"/>
+        <g fill="currentColor">
+          <circle cx="50" cy="24" r="10"/><circle cx="74.7" cy="42" r="10"/><circle cx="65.3" cy="71" r="10"/>
+          <circle cx="34.7" cy="71" r="10"/><circle cx="25.3" cy="42" r="10"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="progress" id="progress"></div>
+
+  <!-- ===================== NAV (como as abas do menu do jogo) ===================== -->
+  <header class="nav" id="nav">
+    <a href="#inicio" class="nav__brand" aria-label="Reeled Studios — início">
+      <i class="slash"></i>
+      <span class="nav__brand-word">REELED<em>STUDIOS</em></span>
+    </a>
+    <nav class="nav__tabs" id="navTabs" aria-label="Seções">
+      <a href="#inicio" class="is-active">Início</a>
+      <a href="#kartx">KartX</a>
+      <a href="#veiculos">Veículos</a>
+      <a href="#modos">Modos</a>
+      <a href="#pistas">Pistas</a>
+      <a href="#galeria">Galeria</a>
+      <a href="#estudio">Estúdio</a>
+      <span class="nav__ink" id="navInk"></span>
+    </nav>
+    <button class="btn btn--ghost nav__cta" data-trailer>
+      <span>▶ Trailer</span>
+    </button>
+    <button class="nav__burger" id="burger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </header>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" id="inicio" data-section>
+      <div class="hero__media">
+        <video class="hero__video" autoplay muted loop playsinline preload="auto" poster="assets/img/a-duelo.jpg">
+          <source src="assets/video/kartx-loop.mp4" type="video/mp4">
+        </video>
+        <canvas class="hero__lines" id="speedLines"></canvas>
+        <div class="hero__shade"></div>
+        <div class="scanlines"></div>
+      </div>
+
+      <!-- HUD inspirado no HUD de corrida do KartX -->
+      <div class="hud" aria-hidden="true">
+        <div class="hud__pos">
+          <div class="hud__pos-num"><b id="hudPos">7</b><span>/ 7</span></div>
+          <div class="hud__pos-meta">
+            <span class="hud__lbl">VOLTA <b id="hudLap">1</b> / 3</span>
+            <span class="hud__time mono" id="hudTime">0:00.000</span>
+          </div>
+        </div>
+        <ol class="hud__board" id="hudBoard"></ol>
+        <div class="hud__speed">
+          <b class="mono" id="hudSpeed">0</b><span>KM/H</span>
+          <div class="hud__rpm"><i id="hudRpm"></i></div>
+        </div>
+        <div class="hud__gear">
+          <b id="hudGear">N</b><span>/ 5</span>
+          <div class="hud__tyre"><small>PNEU</small>SLICK</div>
+        </div>
+      </div>
+
+      <div class="hero__content">
+        <p class="eyebrow reveal-up" style="--d:.1s"><i class="slash slash--sm"></i> REELED STUDIOS APRESENTA</p>
+        <h1 class="kx-logo reveal-up" style="--d:.2s" aria-label="KartX">
+          <span class="kx-logo__lines"><i></i><i></i><i></i></span>
+          <span class="kx-logo__word">KART</span><span class="kx-logo__x">X</span>
+        </h1>
+        <p class="hero__tag reveal-up" style="--d:.35s">Kart, shifter e fórmula com física de verdade. Chuva, neblina, pit stop e uma IA que aprendeu a pilotar. <strong>Feito no Brasil.</strong></p>
+        <div class="hero__ctas reveal-up" style="--d:.5s">
+          <a href="#kartx" class="btn btn--mint"><span>Conheça o KartX</span></a>
+          <button class="btn btn--ghost" data-trailer><span>▶ Ver a abertura</span></button>
+        </div>
+        <div class="hero__badges reveal-up" style="--d:.65s">
+          <span class="tag">PC</span><span class="tag">UNREAL ENGINE 5</span><span class="tag tag--live"><i></i> EM DESENVOLVIMENTO</span>
+        </div>
+      </div>
+
+      <a href="#kartx" class="scroll-cue" aria-label="Rolar para baixo"><span>ROLE</span><i></i></a>
+    </section>
+
+    <!-- ===================== TICKER ===================== -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>13 CIRCUITOS</span><b>/</b><span>104 LAYOUTS</span><b>/</b><span>CHUVA FORTE</span><b>/</b><span>NEBLINA</span><b>/</b><span>ENDURANCE ATÉ 6 HORAS</span><b>/</b><span>TELA DIVIDIDA PARA 4</span><b>/</b><span>ONLINE</span><b>/</b><span>IA COM APRENDIZADO DE MÁQUINA</span><b>/</b><span>MODO ANIME</span><b>/</b>
+        <span>13 CIRCUITOS</span><b>/</b><span>104 LAYOUTS</span><b>/</b><span>CHUVA FORTE</span><b>/</b><span>NEBLINA</span><b>/</b><span>ENDURANCE ATÉ 6 HORAS</span><b>/</b><span>TELA DIVIDIDA PARA 4</span><b>/</b><span>ONLINE</span><b>/</b><span>IA COM APRENDIZADO DE MÁQUINA</span><b>/</b><span>MODO ANIME</span><b>/</b>
+      </div>
+    </div>
+
+    <!-- ===================== KARTX EM DESTAQUE ===================== -->
+    <section class="section kartx" id="kartx" data-section>
+      <div class="wrap">
+        <div class="steps reveal">
+          <div class="step is-on"><b>01</b><span><small>JOGO</small>KARTX</span></div>
+          <div class="step"><b>02</b><span><small>GÊNERO</small>CORRIDA</span></div>
+          <div class="step"><b>03</b><span><small>PLATAFORMA</small>PC</span></div>
+          <div class="step"><b>04</b><span><small>STATUS</small>EM DESENVOLVIMENTO</span></div>
+        </div>
+
+        <div class="kartx__grid">
+          <div class="kartx__text">
+            <h2 class="h2 reveal">Escolha o kart.<br>Escolha a pista.<br><span class="mint">Vença a chuva.</span></h2>
+            <p class="lead reveal">KartX é o nosso jogo de corrida: do kart de aluguel ao monoposto turbo, cada veículo tem física própria — peso, aderência, câmbio e freio que você sente no volante. Treine sozinho contra o seu fantasma, encare um fim de semana completo com classificação, ou divida o kart com um amigo: um no volante, o outro nos pedais.</p>
+            <p class="lead reveal">Os pilotos adversários não seguem trilhos: a IA do KartX foi treinada com aprendizado por reforço, volta após volta, até aprender a frear, ultrapassar e defender posição.</p>
+
+            <div class="stats" id="stats">
+              <div class="stat reveal"><b data-count="13">0</b><span>circuitos</span></div>
+              <div class="stat reveal"><b data-count="104">0</b><span>layouts de pista</span></div>
+              <div class="stat reveal"><b data-count="7">0</b><span>modos de jogo</span></div>
+              <div class="stat reveal"><b data-count="3">0</b><span>classes de veículo</span></div>
+              <div class="stat reveal"><b data-count="4">0</b><span>na tela dividida</span></div>
+              <div class="stat reveal"><b data-count="6" data-suffix="h">0</b><span>de endurance</span></div>
+            </div>
+          </div>
+
+          <div class="kartx__media">
+            <figure class="frame frame--a reveal-clip" data-parallax="-0.06">
+              <img src="assets/img/g-formula-pov.jpg" alt="Cockpit do Fórmula Regional no grid de largada" loading="lazy">
+              <figcaption>FÓRMULA REGIONAL · CÂMERA DE COCKPIT</figcaption>
+            </figure>
+            <figure class="frame frame--b reveal-clip" data-parallax="0.08">
+              <img src="assets/img/g-kart-race.jpg" alt="Kart em corrida no circuito" loading="lazy">
+              <figcaption>KART PADRÃO · CORRIDA</figcaption>
+            </figure>
+            <div class="corner-hud reveal"><span class="mono">REC ●</span> GAMEPLAY</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRAILER / ABERTURA ===================== -->
+    <section class="trailer" id="trailer" data-section>
+      <canvas class="trailer__lines" id="mangaLines"></canvas>
+      <div class="wrap trailer__wrap">
+        <div class="trailer__text">
+          <p class="eyebrow reveal"><i class="slash slash--sm"></i> A ABERTURA</p>
+          <h2 class="h2 reveal">Corrida no<br><span class="ink">traço de mangá</span></h2>
+          <p class="lead reveal">A abertura do KartX foi renderizada dentro do próprio jogo — e virou um modo: no <strong>Modo Anime</strong> a corrida inteira é desenhada em tinta e papel, com os karts em cor e linhas de velocidade.</p>
+          <button class="btn btn--mint reveal" data-trailer><span>▶ Assistir com som</span></button>
+        </div>
+        <button class="trailer__player reveal-clip" data-trailer aria-label="Assistir à abertura do KartX">
+          <video muted loop playsinline preload="none" poster="assets/img/a-cockpit.jpg" data-autoplay-visible>
+            <source src="assets/video/kartx-loop.mp4" type="video/mp4">
+          </video>
+          <span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="trailer__dur mono">0:27</span>
+        </button>
+      </div>
+      <div class="wrap filmstrip">
+        <img src="assets/img/a-largada-sm.jpg" alt="Grid de largada no traço de mangá" loading="lazy" class="reveal">
+        <img src="assets/img/a-duelo-sm.jpg" alt="Duelo de karts com linhas de velocidade" loading="lazy" class="reveal">
+        <img src="assets/img/a-aereo-sm.jpg" alt="Fórmula vista de cima" loading="lazy" class="reveal">
+        <img src="assets/img/a-piloto-sm.jpg" alt="Piloto no cockpit" loading="lazy" class="reveal">
+        <img src="assets/img/a-reta-sm.jpg" alt="Reta com linhas de velocidade" loading="lazy" class="reveal">
+      </div>
+    </section>
+
+    <!-- ===================== VEÍCULOS (tela "Escolha o kart") ===================== -->
+    <section class="section garage" id="veiculos" data-section>
+      <div class="wrap">
+        <header class="sec-head">
+          <p class="eyebrow reveal"><i class="slash slash--sm"></i> 03 · KART</p>
+          <h2 class="h2 reveal">Escolha o kart</h2>
+          <p class="sub reveal">Use as setas ou o mouse. Igualzinho ao menu do jogo.</p>
+        </header>
+
+        <div class="garage__stage reveal" id="garage">
+          <div class="garage__spot"></div>
+          <div class="garage__img">
+            <img id="carImg" src="assets/img/car-padrao.jpg" alt="Kart Padrão no showroom">
+          </div>
+
+          <div class="garage__name" id="carName">
+            <h3 id="carTitle">KART PADRÃO</h3>
+            <p class="mint" id="carEngine">Motor 2 tempos · 1 marcha</p>
+            <p class="muted" id="carDesc">Kart de referência: leve, direto e previsível.</p>
+          </div>
+
+          <ul class="garage__stats" id="carStats"></ul>
+
+          <div class="garage__paint" id="carPaint" hidden>
+            <span class="lbl">PINTURA</span>
+            <button class="sw is-on" data-paint="car-formula" style="--c:#d5131a" aria-label="Vermelho"></button>
+            <button class="sw" data-paint="car-formula-blue" style="--c:#1f3fd6" aria-label="Azul royal"></button>
+            <button class="sw" data-paint="car-formula-rain" style="--c:#ff9a1a" aria-label="Laranja"></button>
+          </div>
+
+          <div class="garage__pick" role="tablist" aria-label="Veículos">
+            <button class="pick is-on" data-car="0" role="tab"><b>KART PADRÃO</b><small>79 km/h</small></button>
+            <button class="pick" data-car="1" role="tab"><b>KART SHIFTER</b><small>180 km/h · 5 marchas</small></button>
+            <button class="pick" data-car="2" role="tab"><b>FÓRMULA REGIONAL</b><small>250 km/h · 1.8 turbo</small></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== MODOS ===================== -->
+    <section class="section modes" id="modos" data-section>
+      <div class="wrap">
+        <header class="sec-head sec-head--row">
+          <div>
+            <p class="eyebrow reveal"><i class="slash slash--sm"></i> MODOS DE JOGO</p>
+            <h2 class="h2 reveal">7 jeitos de correr</h2>
+          </div>
+          <p class="sub reveal">Do contra-relógio ao endurance de 6 horas com troca de piloto no pit.</p>
+        </header>
+        <div class="modes__row" id="modes"></div>
+      </div>
+    </section>
+
+    <!-- ===================== PISTAS ===================== -->
+    <section class="section tracks" id="pistas" data-section>
+      <div class="wrap">
+        <header class="sec-head sec-head--row">
+          <div>
+            <p class="eyebrow reveal"><i class="slash slash--sm"></i> 01 · PISTA</p>
+            <h2 class="h2 reveal">Escolha a pista</h2>
+          </div>
+          <p class="sub reveal">13 circuitos e 104 layouts — de kartódromos a um aeroporto inteiro, de Salvador ao Japão.</p>
+        </header>
+
+        <div class="tracks__layout">
+          <div class="track-view reveal" id="trackView">
+            <div class="track-view__map">
+              <svg id="trackBig" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+            <div class="track-view__info">
+              <p class="eyebrow" id="tvEyebrow">CIRCUITO</p>
+              <h3 id="tvName">—</h3>
+              <dl>
+                <div><dt>Layouts</dt><dd id="tvVariants">—</dd></div>
+                <div><dt>Extensão</dt><dd id="tvLen">—</dd></div>
+                <div><dt>Volta estimada</dt><dd class="mono" id="tvLap">0:00.000</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="tracks__grid" id="trackGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RECURSOS ===================== -->
+    <section class="section feats" id="recursos">
+      <div class="wrap">
+        <header class="sec-head">
+          <p class="eyebrow reveal"><i class="slash slash--sm"></i> NA PISTA</p>
+          <h2 class="h2 reveal">Detalhes que fazem a corrida</h2>
+        </header>
+        <div class="bento">
+          <article class="card card--img card--wide reveal tilt">
+            <img src="assets/img/g-chuva-lente.jpg" alt="Gotas de chuva na lente da câmera" loading="lazy">
+            <div class="card__body">
+              <span class="chip" style="--c:#59bfff">CLIMA</span>
+              <h3>Sol, encoberto, neblina, chuva leve e chuva forte</h3>
+              <p>Cada sessão tem o seu clima. A pista molhada muda a frenagem, a água espirra na lente e o pneu certo faz toda a diferença.</p>
+            </div>
+          </article>
+          <article class="card card--img reveal tilt">
+            <img src="assets/img/g-spray-frente.jpg" alt="Kart levantando spray no gelo" loading="lazy">
+            <div class="card__body">
+              <span class="chip" style="--c:#8cd9ff">PNEUS</span>
+              <h3>Slick ou chuva</h3>
+              <p>Slick para aderência no seco, chuva para perder menos no molhado — e até pista de gelo.</p>
+            </div>
+          </article>
+          <article class="card card--img reveal tilt">
+            <img src="assets/img/g-garagem-kart.jpg" alt="Garagem com kart personalizado" loading="lazy">
+            <div class="card__body">
+              <span class="chip" style="--c:#ffb833">GARAGEM</span>
+              <h3>Pintura, padrão, número e macacão</h3>
+              <p>Monte a sua identidade: cores, padrões e capacete do seu piloto.</p>
+            </div>
+          </article>
+          <article class="card card--ai reveal tilt">
+            <div class="ai-viz" aria-hidden="true">
+              <svg viewBox="0 0 300 160" id="aiViz"></svg>
+            </div>
+            <div class="card__body">
+              <span class="chip" style="--c:#10e8a0">IA</span>
+              <h3>Adversários que aprenderam a pilotar</h3>
+              <p>Rivais treinados com Learning Agents (aprendizado por reforço) usam os mesmos comandos que você: volante, acelerador e freio.</p>
+            </div>
+          </article>
+          <article class="card card--img reveal tilt">
+            <img src="assets/img/g-painel.jpg" alt="Painel digital do volante do fórmula" loading="lazy">
+            <div class="card__body">
+              <span class="chip" style="--c:#d959ff">COCKPIT</span>
+              <h3>Painel ao vivo</h3>
+              <p>Marcha, RPM, delta e tempo de volta direto no volante.</p>
+            </div>
+          </article>
+          <article class="card card--split reveal tilt">
+            <div class="split-viz" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <div class="card__body">
+              <span class="chip" style="--c:#ff5c73">MULTIJOGADOR</span>
+              <h3>Até 4 na mesma tela, e online</h3>
+              <p>Tela dividida no sofá ou lobby online. Endurance em dupla com troca de piloto no pit.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GALERIA ===================== -->
+    <section class="section gallery" id="galeria" data-section>
+      <div class="wrap">
+        <header class="sec-head sec-head--row">
+          <div>
+            <p class="eyebrow reveal"><i class="slash slash--sm"></i> CAPTURAS DO JOGO</p>
+            <h2 class="h2 reveal">Galeria</h2>
+          </div>
+          <div class="filters reveal" id="filters" role="tablist">
+            <button class="is-on" data-f="all">Todas</button>
+            <button data-f="corrida">Corrida</button>
+            <button data-f="clima">Clima</button>
+            <button data-f="garagem">Garagem</button>
+            <button data-f="anime">Anime</button>
+            <button data-f="menu">Menus</button>
+          </div>
+        </header>
+        <div class="masonry" id="masonry"></div>
+      </div>
+    </section>
+
+    <!-- ===================== ESTÚDIO ===================== -->
+    <section class="section studio" id="estudio" data-section>
+      <div class="wrap studio__grid">
+        <div class="studio__logo reveal">
+          <svg class="reel reel--spin" viewBox="0 0 100 100"><use href="#reel"/></svg>
+          <div class="studio__glow"></div>
+        </div>
+        <div class="studio__text">
+          <p class="eyebrow reveal"><i class="slash slash--sm"></i> O ESTÚDIO</p>
+          <h2 class="h2 reveal">Reeled <span class="mint">Studios</span></h2>
+          <p class="lead reveal">Somos um estúdio brasileiro de videogames independente. A gente faz jogos que dá vontade de jogar de novo: rápidos de entender, difíceis de dominar e cheios de detalhe.</p>
+          <ul class="values">
+            <li class="reveal"><b>01</b><div><h4>Física primeiro</h4><p>Peso, aderência e câmbio de verdade. Cada veículo é ajustado em bancada de testes até a pilotagem ficar honesta.</p></div></li>
+            <li class="reveal"><b>02</b><div><h4>Feito no Brasil</h4><p>Nosso jogo tem sotaque brasileiro — e tem até circuito em Salvador.</p></div></li>
+            <li class="reveal"><b>03</b><div><h4>Tecnologia de ponta</h4><p>Unreal Engine 5, Chaos Vehicles, Nanite e IA treinada com Learning Agents.</p></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CONTATO ===================== -->
+    <section class="cta" id="contato">
+      <div class="cta__checker" aria-hidden="true"></div>
+      <div class="wrap cta__inner">
+        <h2 class="h2 reveal">Pronto para a <span class="mint">largada?</span></h2>
+        <p class="lead reveal">Imprensa, parcerias, criadores de conteúdo ou só pra dizer oi: fale com a Reeled Studios.</p>
+        <div class="hero__ctas reveal">
+          <a class="btn btn--mint" href="mailto:contato@reeledstudios.com.br"><span>Fale com a gente</span></a>
+          <button class="btn btn--ghost" data-trailer><span>▶ Ver a abertura</span></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== RODAPÉ (barra de teclas do menu) ===================== -->
+  <footer class="foot">
+    <div class="foot__keys">
+      <span><kbd>Q</kbd><kbd>E</kbd> TROCAR DE SEÇÃO</span>
+      <span><kbd>←</kbd><kbd>→</kbd> ESCOLHER</span>
+      <span><kbd>ESC</kbd> VOLTAR</span>
+    </div>
+    <div class="foot__brand">
+      <span class="reel-logo reel-logo--sm"><svg class="reel" viewBox="0 0 100 100"><use href="#reel"/></svg> REELED STUDIOS</span>
+      <span class="muted">© 2026 · KARTX · VERSÃO DE DESENVOLVIMENTO</span>
+    </div>
+  </footer>
+
+  <!-- ===================== MODAIS ===================== -->
+  <div class="modal" id="videoModal" aria-hidden="true" role="dialog" aria-label="Abertura do KartX">
+    <div class="modal__bg" data-close></div>
+    <div class="modal__box">
+      <button class="modal__x" data-close aria-label="Fechar">ESC ✕</button>
+      <video id="trailerVideo" controls playsinline preload="none" poster="assets/img/a-largada.jpg">
+        <source src="assets/video/kartx-abertura.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Captura do jogo">
+    <div class="modal__bg" data-close></div>
+    <figure>
+      <img id="lbImg" alt="">
+      <figcaption id="lbCap"></figcaption>
+    </figure>
+    <button class="lb__nav lb__prev" id="lbPrev" aria-label="Anterior">‹</button>
+    <button class="lb__nav lb__next" id="lbNext" aria-label="Próxima">›</button>
+    <button class="modal__x" data-close aria-label="Fechar">ESC ✕</button>
+  </div>
+
+  <script src="assets/js/tracks.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
